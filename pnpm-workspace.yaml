@@ -1,3 +1,6 @@
 packages:
   - 'app'
   - 'api'
+allowBuilds:
+  core-js: true
+  esbuild: true
