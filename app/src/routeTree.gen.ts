@@ -14,9 +14,13 @@ import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as ProcurementRouteImport } from './routes/procurement'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as MaterialsRouteImport } from './routes/materials'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as HrRouteImport } from './routes/hr'
 import { Route as FinanceRouteImport } from './routes/finance'
+import { Route as EquipmentRouteImport } from './routes/equipment'
 import { Route as DocumentsRouteImport } from './routes/documents'
+import { Route as ContractorsRouteImport } from './routes/contractors'
+import { Route as BillingRouteImport } from './routes/billing'
 import { Route as ApprovalsRouteImport } from './routes/approvals'
 import { Route as IndexRouteImport } from './routes/index'
 
@@ -45,6 +49,11 @@ const MaterialsRoute = MaterialsRouteImport.update({
   path: '/materials',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HrRoute = HrRouteImport.update({
   id: '/hr',
   path: '/hr',
@@ -55,9 +64,24 @@ const FinanceRoute = FinanceRouteImport.update({
   path: '/finance',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EquipmentRoute = EquipmentRouteImport.update({
+  id: '/equipment',
+  path: '/equipment',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DocumentsRoute = DocumentsRouteImport.update({
   id: '/documents',
   path: '/documents',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContractorsRoute = ContractorsRouteImport.update({
+  id: '/contractors',
+  path: '/contractors',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BillingRoute = BillingRouteImport.update({
+  id: '/billing',
+  path: '/billing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApprovalsRoute = ApprovalsRouteImport.update({
@@ -74,9 +98,13 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/approvals': typeof ApprovalsRoute
+  '/billing': typeof BillingRoute
+  '/contractors': typeof ContractorsRoute
   '/documents': typeof DocumentsRoute
+  '/equipment': typeof EquipmentRoute
   '/finance': typeof FinanceRoute
   '/hr': typeof HrRoute
+  '/login': typeof LoginRoute
   '/materials': typeof MaterialsRoute
   '/mcp': typeof McpRoute
   '/procurement': typeof ProcurementRoute
@@ -86,9 +114,13 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/approvals': typeof ApprovalsRoute
+  '/billing': typeof BillingRoute
+  '/contractors': typeof ContractorsRoute
   '/documents': typeof DocumentsRoute
+  '/equipment': typeof EquipmentRoute
   '/finance': typeof FinanceRoute
   '/hr': typeof HrRoute
+  '/login': typeof LoginRoute
   '/materials': typeof MaterialsRoute
   '/mcp': typeof McpRoute
   '/procurement': typeof ProcurementRoute
@@ -99,9 +131,13 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/approvals': typeof ApprovalsRoute
+  '/billing': typeof BillingRoute
+  '/contractors': typeof ContractorsRoute
   '/documents': typeof DocumentsRoute
+  '/equipment': typeof EquipmentRoute
   '/finance': typeof FinanceRoute
   '/hr': typeof HrRoute
+  '/login': typeof LoginRoute
   '/materials': typeof MaterialsRoute
   '/mcp': typeof McpRoute
   '/procurement': typeof ProcurementRoute
@@ -113,9 +149,13 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/approvals'
+    | '/billing'
+    | '/contractors'
     | '/documents'
+    | '/equipment'
     | '/finance'
     | '/hr'
+    | '/login'
     | '/materials'
     | '/mcp'
     | '/procurement'
@@ -125,9 +165,13 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/approvals'
+    | '/billing'
+    | '/contractors'
     | '/documents'
+    | '/equipment'
     | '/finance'
     | '/hr'
+    | '/login'
     | '/materials'
     | '/mcp'
     | '/procurement'
@@ -137,9 +181,13 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/approvals'
+    | '/billing'
+    | '/contractors'
     | '/documents'
+    | '/equipment'
     | '/finance'
     | '/hr'
+    | '/login'
     | '/materials'
     | '/mcp'
     | '/procurement'
@@ -150,9 +198,13 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApprovalsRoute: typeof ApprovalsRoute
+  BillingRoute: typeof BillingRoute
+  ContractorsRoute: typeof ContractorsRoute
   DocumentsRoute: typeof DocumentsRoute
+  EquipmentRoute: typeof EquipmentRoute
   FinanceRoute: typeof FinanceRoute
   HrRoute: typeof HrRoute
+  LoginRoute: typeof LoginRoute
   MaterialsRoute: typeof MaterialsRoute
   McpRoute: typeof McpRoute
   ProcurementRoute: typeof ProcurementRoute
@@ -197,6 +249,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MaterialsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/hr': {
       id: '/hr'
       path: '/hr'
@@ -211,11 +270,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FinanceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/equipment': {
+      id: '/equipment'
+      path: '/equipment'
+      fullPath: '/equipment'
+      preLoaderRoute: typeof EquipmentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/documents': {
       id: '/documents'
       path: '/documents'
       fullPath: '/documents'
       preLoaderRoute: typeof DocumentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contractors': {
+      id: '/contractors'
+      path: '/contractors'
+      fullPath: '/contractors'
+      preLoaderRoute: typeof ContractorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/billing': {
+      id: '/billing'
+      path: '/billing'
+      fullPath: '/billing'
+      preLoaderRoute: typeof BillingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/approvals': {
@@ -238,9 +318,13 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApprovalsRoute: ApprovalsRoute,
+  BillingRoute: BillingRoute,
+  ContractorsRoute: ContractorsRoute,
   DocumentsRoute: DocumentsRoute,
+  EquipmentRoute: EquipmentRoute,
   FinanceRoute: FinanceRoute,
   HrRoute: HrRoute,
+  LoginRoute: LoginRoute,
   MaterialsRoute: MaterialsRoute,
   McpRoute: McpRoute,
   ProcurementRoute: ProcurementRoute,

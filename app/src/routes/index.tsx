@@ -4,6 +4,9 @@ import { Badge } from '#/components/ui/badge'
 import { Separator } from '#/components/ui/separator'
 import { Progress } from '#/components/ui/progress'
 import {
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+} from '#/components/ui/table'
+import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
@@ -88,17 +91,17 @@ function StatCard({
 }) {
   return (
     <Card className="shadow-none border-border">
-      <CardContent className="p-5">
+      <CardContent className="p-3">
         <div className="flex items-start justify-between">
-          <div className="flex flex-col gap-1">
-            <span className="text-xs font-medium text-muted-foreground">{label}</span>
-            <span className="text-2xl font-bold tracking-tight text-foreground">{value}</span>
+          <div className="flex flex-col gap-0.5">
+            <span className="text-[10px] uppercase font-semibold text-muted-foreground">{label}</span>
+            <span className="text-xl font-bold tracking-tight text-foreground">{value}</span>
           </div>
-          <div className={`flex size-9 items-center justify-center rounded-lg bg-primary/8 ${iconColor}`}>
+          <div className={`flex size-8 items-center justify-center rounded ${iconColor} bg-muted/50`}>
             <Icon className="size-4" />
           </div>
         </div>
-        <div className="mt-3 flex items-center gap-1.5">
+        <div className="mt-2 flex items-center gap-1.5">
           {trendUp ? (
             <ArrowUpRight className="size-3 text-emerald-500" />
           ) : (
@@ -172,10 +175,10 @@ function DashboardOverview() {
       <div className="grid gap-4 lg:grid-cols-3">
         {/* Spend chart - wide */}
         <Card className="shadow-none border-border col-span-2">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 pt-5 px-5">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 pt-3 px-3">
             <div>
               <CardTitle className="text-sm font-semibold text-foreground">Budget vs Actual Spend</CardTitle>
-              <p className="text-xs text-muted-foreground mt-0.5">Monthly comparison across all active projects</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">Monthly comparison across all active projects</p>
             </div>
             <div className="flex items-center gap-3 text-xs text-muted-foreground">
               <span className="flex items-center gap-1.5">
@@ -191,7 +194,7 @@ function DashboardOverview() {
               </Button>
             </div>
           </CardHeader>
-          <CardContent className="px-5 pb-4">
+          <CardContent className="px-3 pb-3">
             <ChartContainer config={chartConfig} className="h-48 w-full">
               <AreaChart data={spendData} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
                 <defs>
@@ -217,16 +220,16 @@ function DashboardOverview() {
 
         {/* PO chart */}
         <Card className="shadow-none border-border">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 pt-5 px-5">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 pt-3 px-3">
             <div>
               <CardTitle className="text-sm font-semibold text-foreground">POs Raised</CardTitle>
-              <p className="text-xs text-muted-foreground mt-0.5">Monthly procurement activity</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">Monthly procurement activity</p>
             </div>
             <Button variant="ghost" size="icon" className="size-6">
               <MoreHorizontal className="size-3" />
             </Button>
           </CardHeader>
-          <CardContent className="px-5 pb-4">
+          <CardContent className="px-3 pb-3">
             <ChartContainer config={chartConfig} className="h-48 w-full">
               <BarChart data={procurement} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={false} />
@@ -244,47 +247,47 @@ function DashboardOverview() {
       <div className="grid gap-4 lg:grid-cols-2">
         {/* Top Projects */}
         <Card className="shadow-none border-border">
-          <CardHeader className="flex flex-row items-center justify-between px-5 py-4">
+          <CardHeader className="flex flex-row items-center justify-between p-3">
             <CardTitle className="text-sm font-semibold text-foreground">Top Projects</CardTitle>
             <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground">Last Month</span>
+              <span className="text-[10px] uppercase font-semibold text-muted-foreground">Last Month</span>
               <Button variant="ghost" size="icon" className="size-6">
                 <MoreHorizontal className="size-3" />
               </Button>
             </div>
           </CardHeader>
           <Separator />
-          <CardContent className="p-0">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left px-5 py-2.5 text-xs font-medium text-muted-foreground">#</th>
-                  <th className="text-left px-3 py-2.5 text-xs font-medium text-muted-foreground">Project</th>
-                  <th className="text-left px-3 py-2.5 text-xs font-medium text-muted-foreground">Spend</th>
-                  <th className="text-right px-5 py-2.5 text-xs font-medium text-muted-foreground">Status</th>
-                </tr>
-              </thead>
-              <tbody>
+          <CardContent className="p-0 border-b-0 max-h-[40vh] overflow-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="pl-3 w-10">#</TableHead>
+                  <TableHead>Project</TableHead>
+                  <TableHead>Spend</TableHead>
+                  <TableHead className="pr-3 text-right">Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {topProjects.map((p, i) => (
-                  <tr key={p.id} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
-                    <td className="px-5 py-3 text-xs text-muted-foreground">{i + 1}</td>
-                    <td className="px-3 py-3">
-                      <div className="font-medium text-sm text-foreground">{p.name}</div>
-                      <div className="text-xs text-muted-foreground">{p.client}</div>
-                    </td>
-                    <td className="px-3 py-3">
+                  <TableRow key={p.id} className="hover:bg-muted/30 transition-colors">
+                    <TableCell className="pl-3 text-xs font-mono text-muted-foreground">{i + 1}</TableCell>
+                    <TableCell>
+                      <div className="font-medium text-xs text-foreground max-w-[120px] truncate" title={p.name}>{p.name}</div>
+                      <div className="text-[10px] text-muted-foreground truncate max-w-[120px]">{p.client}</div>
+                    </TableCell>
+                    <TableCell>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-semibold text-primary">₹{p.spent}L / ₹{p.budget}L</span>
+                        <span className="text-xs font-mono font-bold text-primary">₹{p.spent}L / ₹{p.budget}L</span>
                       </div>
                       <Progress
                         value={Math.min(p.pct, 100)}
-                        className={`h-1 mt-1.5 w-24 ${p.pct > 100 ? '[&>div]:bg-destructive' : p.pct > 90 ? '[&>div]:bg-amber-500' : ''}`}
+                        className={`h-1 mt-1 w-20 ${p.pct > 100 ? '[&>div]:bg-destructive' : p.pct > 90 ? '[&>div]:bg-amber-500' : ''}`}
                       />
-                    </td>
-                    <td className="px-5 py-3 text-right">
+                    </TableCell>
+                    <TableCell className="pr-3 text-right">
                       <Badge
                         variant={p.status === 'On Track' ? 'outline' : p.status === 'Overrun' ? 'destructive' : 'secondary'}
-                        className={`text-[10px] font-semibold ${
+                        className={`text-[9px] uppercase tracking-wider font-bold h-4 px-1.5 ${
                           p.status === 'On Track'
                             ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
                             : p.status === 'Delayed'
@@ -294,39 +297,39 @@ function DashboardOverview() {
                       >
                         {p.status}
                       </Badge>
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </CardContent>
         </Card>
 
         {/* Low Stock */}
         <Card className="shadow-none border-border">
-          <CardHeader className="flex flex-row items-center justify-between px-5 py-4">
+          <CardHeader className="flex flex-row items-center justify-between p-3">
             <div className="flex items-center gap-2">
-              <AlertTriangle className="size-4 text-amber-500" />
+              <AlertTriangle className="size-4 text-amber-600" />
               <CardTitle className="text-sm font-semibold text-foreground">Reorder Alerts</CardTitle>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground">Live</span>
+              <span className="text-[10px] uppercase font-semibold text-muted-foreground">Live</span>
               <span className="inline-flex size-2 rounded-full bg-emerald-500 animate-pulse" />
             </div>
           </CardHeader>
           <Separator />
-          <CardContent className="p-0">
+          <CardContent className="p-0 border-b-0">
             {reorderItems.map((item, i) => (
               <div
                 key={i}
-                className="flex items-center justify-between px-5 py-4 border-b border-border/50 hover:bg-muted/30 transition-colors"
+                className="flex items-center justify-between p-3 border-b border-border/50 hover:bg-muted/30 transition-colors"
               >
                 <div className="flex flex-col gap-0.5">
-                  <span className="text-sm font-medium text-foreground">{item.name}</span>
-                  <span className="text-xs text-muted-foreground">Reorder at: {item.reorder} {item.unit}</span>
+                  <span className="text-xs font-medium text-foreground">{item.name}</span>
+                  <span className="text-[10px] text-muted-foreground">Reorder at: {item.reorder} {item.unit}</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Badge variant="destructive" className="text-xs font-bold">
+                  <Badge variant="destructive" className="text-[10px] font-bold font-mono h-5 px-1.5">
                     {item.qty} {item.unit}
                   </Badge>
                 </div>
