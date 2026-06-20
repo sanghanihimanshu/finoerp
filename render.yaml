@@ -3,7 +3,7 @@ services:
     name: finoerp
     runtime: static
     rootDir: app
-    buildCommand: pnpm install && pnpm run build
+    buildCommand: npm install && npm run build
     staticPublishPath: dist
     routes:
       - type: rewrite
