@@ -4,7 +4,7 @@ services:
     runtime: static
     installCommand: corepack enable && pnpm install --ignore-scripts
     buildCommand: cd app && pnpm run build
-    staticPublishPath: app/dist
+    staticPublishPath: app/.output/public
     envVars:
       - key: NODE_VERSION
         value: 20
