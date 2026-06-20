@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '#/components/ui/card'
 import { Badge } from '#/components/ui/badge'
 import { Progress } from '#/components/ui/progress'
@@ -32,13 +32,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '#/components/ui/select'
+import { DataTable, SortableHeader } from '#/components/ui/data-table'
+import type { ColumnDef } from '@tanstack/react-table'
 import {
   Plus,
   Search,
-  Filter,
-  MoreHorizontal,
-  Eye,
-  ArrowUpDown,
   HardHat,
   TrendingDown,
   Clock,
@@ -177,13 +175,6 @@ function ProjectsModule() {
   const [deleteSite, setDeleteSite] = useState<Site | null>(null)
   const [form, setForm] = useState(emptyForm())
 
-  const filtered = sites.filter(
-    (s) =>
-      s.name.toLowerCase().includes(search.toLowerCase()) ||
-      s.id.toLowerCase().includes(search.toLowerCase()) ||
-      s.client.toLowerCase().includes(search.toLowerCase())
-  )
-
   const getCount = (key: string) => {
     if (key === 'delayed') return sites.filter((s) => s.delayed).length
     return sites.filter((s) => s.status === key).length
@@ -209,8 +200,94 @@ function ProjectsModule() {
     setDeleteSite(null)
   }
 
+  const siteCols = useMemo<ColumnDef<Site>[]>(() => [
+    {
+      accessorKey: 'id',
+      header: ({ column }) => <SortableHeader column={column} title="Site" />,
+      cell: ({ row }) => (
+        <div>
+          <div className="font-mono font-semibold text-primary text-xs">{row.getValue('id')}</div>
+          <div className="font-medium text-foreground text-xs mt-0.5 max-w-37.5 truncate" title={row.original.name}>{row.original.name}</div>
+        </div>
+      ),
+    },
+    {
+      accessorKey: 'client',
+      header: ({ column }) => <SortableHeader column={column} title="Client / Type" />,
+      cell: ({ row }) => (
+        <div>
+          <div className="text-xs text-foreground font-medium">{row.getValue('client')}</div>
+          <div className="text-[10px] text-muted-foreground">{row.original.type}</div>
+        </div>
+      ),
+    },
+    {
+      accessorKey: 'status',
+      header: ({ column }) => <SortableHeader column={column} title="Status" />,
+      cell: ({ row }) => <StatusBadge status={row.getValue('status')} delayed={row.original.delayed} />,
+    },
+    {
+      id: 'costSplit',
+      header: () => <span className="text-[11px] font-semibold uppercase tracking-wide">Cost Split</span>,
+      cell: ({ row }) => (
+        <div className="text-xs text-muted-foreground space-y-0.5">
+          <div className="flex justify-between gap-4"><span>Mat</span><span className="font-medium text-foreground">{fmt(row.original.material)}</span></div>
+          <div className="flex justify-between gap-4"><span>Lab</span><span className="font-medium text-foreground">{fmt(row.original.labour)}</span></div>
+        </div>
+      ),
+    },
+    {
+      id: 'budget',
+      header: () => <span className="text-[11px] font-semibold uppercase tracking-wide">Budget vs Actual</span>,
+      cell: ({ row }) => {
+        const site = row.original
+        const overrun = site.spent > site.budget
+        return (
+          <div className="w-44">
+            <div className="flex items-center justify-between mb-1.5 text-xs">
+              <span className={`font-semibold ${overrun ? 'text-destructive' : 'text-foreground'}`}>{fmt(site.spent)}</span>
+              <span className="text-muted-foreground">{fmt(site.budget)}</span>
+            </div>
+            <Progress
+              value={Math.min((site.spent / site.budget) * 100, 100)}
+              className={`h-1.5 ${overrun ? '[&>div]:bg-destructive' : site.spent / site.budget > 0.85 ? '[&>div]:bg-amber-500' : '[&>div]:bg-primary'}`}
+            />
+            <div className="flex items-center justify-between mt-1 text-[9px] uppercase tracking-wider font-semibold text-muted-foreground">
+              <span>{site.progress}% complete</span>
+              {overrun && <span className="text-destructive">Overrun</span>}
+            </div>
+          </div>
+        )
+      },
+    },
+    {
+      id: 'timeline',
+      header: () => <span className="text-[11px] font-semibold uppercase tracking-wide">Timeline</span>,
+      cell: ({ row }) => (
+        <div>
+          <div className="text-xs font-mono text-foreground">{row.original.start}</div>
+          <div className="text-[10px] text-muted-foreground">→ {row.original.end}</div>
+        </div>
+      ),
+    },
+    {
+      id: 'actions',
+      header: () => null,
+      cell: ({ row }) => (
+        <div className="flex items-center justify-end gap-1">
+          <Button variant="ghost" size="icon" className="size-7" onClick={() => setEditSite({ ...row.original })} title="Edit">
+            <Pencil className="size-3.5 text-muted-foreground" />
+          </Button>
+          <Button variant="ghost" size="icon" className="size-7" onClick={() => setDeleteSite(row.original)} title="Delete">
+            <Trash2 className="size-3.5 text-destructive" />
+          </Button>
+        </div>
+      ),
+    },
+  ], [])
+
   return (
-    <div className="flex flex-col gap-5 max-w-[1400px]">
+    <div className="flex flex-col gap-5 max-w-350">
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-xl font-bold text-foreground">Projects & Sites</h1>
@@ -226,13 +303,13 @@ function ProjectsModule() {
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {summaryStats.map((s) => (
           <Card key={s.label} className="shadow-none border-border">
-            <CardContent className="flex items-center gap-3 p-4">
-              <div className={`flex size-9 shrink-0 items-center justify-center rounded-lg ${s.bg}`}>
+            <CardContent className="flex items-center gap-3 p-3">
+              <div className={`flex size-8 shrink-0 items-center justify-center rounded ${s.bg}`}>
                 <s.icon className={`size-4 ${s.color}`} />
               </div>
-              <div>
-                <div className="text-2xl font-bold text-foreground">{getCount(s.key)}</div>
-                <div className="text-xs text-muted-foreground">{s.label}</div>
+              <div className="flex flex-col leading-tight">
+                <div className="text-lg font-bold text-foreground">{getCount(s.key)}</div>
+                <div className="text-[10px] uppercase font-semibold text-muted-foreground">{s.label}</div>
               </div>
             </CardContent>
           </Card>
@@ -241,108 +318,21 @@ function ProjectsModule() {
 
       {/* Table */}
       <Card className="shadow-none border-border">
-        <CardHeader className="flex flex-row items-center justify-between px-5 py-4">
+        <CardHeader className="flex flex-row items-center justify-between p-3">
           <CardTitle className="text-sm font-semibold">Site Registry</CardTitle>
-          <div className="flex items-center gap-2">
-            <div className="relative">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
-              <Input
-                placeholder="Search sites..."
-                className="w-52 pl-8 h-8 text-xs border-border bg-muted/30"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
-            <Button variant="outline" size="sm" className="h-8 gap-1.5 text-xs">
-              <Filter className="size-3.5" />
-              Filter
-            </Button>
+          <div className="relative">
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
+            <Input
+              placeholder="Search sites..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-48 pl-8 h-7 text-xs"
+            />
           </div>
         </CardHeader>
         <Separator />
-        <CardContent className="p-0">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border bg-muted/20">
-                <th className="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                  <button type="button" className="flex items-center gap-1">Site <ArrowUpDown className="size-3" /></button>
-                </th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Client / Type</th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Status</th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Cost Split</th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground w-52">Budget vs Actual</th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Timeline</th>
-                <th className="text-right px-5 py-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.length === 0 && (
-                <tr>
-                  <td colSpan={7} className="py-10 text-center text-sm text-muted-foreground">No projects match your search.</td>
-                </tr>
-              )}
-              {filtered.map((site) => {
-                const overrun = site.spent > site.budget
-                return (
-                  <tr key={site.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors">
-                    <td className="px-5 py-4">
-                      <div className="font-semibold text-primary text-xs">{site.id}</div>
-                      <div className="font-medium text-foreground text-sm mt-0.5">{site.name}</div>
-                    </td>
-                    <td className="px-4 py-4">
-                      <div className="text-sm text-foreground">{site.client}</div>
-                      <div className="text-xs text-muted-foreground">{site.type}</div>
-                    </td>
-                    <td className="px-4 py-4">
-                      <StatusBadge status={site.status} delayed={site.delayed} />
-                    </td>
-                    <td className="px-4 py-4">
-                      <div className="text-xs text-muted-foreground space-y-0.5">
-                        <div className="flex justify-between gap-4"><span>Mat</span><span className="font-medium text-foreground">{fmt(site.material)}</span></div>
-                        <div className="flex justify-between gap-4"><span>Lab</span><span className="font-medium text-foreground">{fmt(site.labour)}</span></div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-4">
-                      <div className="flex items-center justify-between mb-1.5 text-xs">
-                        <span className={`font-semibold ${overrun ? 'text-destructive' : 'text-foreground'}`}>{fmt(site.spent)}</span>
-                        <span className="text-muted-foreground">{fmt(site.budget)}</span>
-                      </div>
-                      <Progress
-                        value={Math.min((site.spent / site.budget) * 100, 100)}
-                        className={`h-1.5 ${overrun ? '[&>div]:bg-destructive' : site.spent / site.budget > 0.85 ? '[&>div]:bg-amber-500' : '[&>div]:bg-primary'}`}
-                      />
-                      <div className="flex items-center justify-between mt-1 text-[10px] text-muted-foreground">
-                        <span>{site.progress}% complete</span>
-                        {overrun && <span className="text-destructive font-medium">Overrun</span>}
-                      </div>
-                    </td>
-                    <td className="px-4 py-4">
-                      <div className="text-xs text-foreground">{site.start}</div>
-                      <div className="text-xs text-muted-foreground">→ {site.end}</div>
-                    </td>
-                    <td className="px-5 py-4 text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        <Button
-                          variant="ghost" size="icon" className="size-7"
-                          onClick={() => setEditSite({ ...site })}
-                          title="Edit"
-                        >
-                          <Pencil className="size-3.5 text-muted-foreground" />
-                        </Button>
-                        <Button
-                          variant="ghost" size="icon" className="size-7"
-                          onClick={() => setDeleteSite(site)}
-                          title="Delete"
-                        >
-                          <Trash2 className="size-3.5 text-destructive" />
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
+        <CardContent className="p-0 border-b-0">
+          <DataTable columns={siteCols} data={sites} externalFilter={search} onExternalFilterChange={setSearch} />
         </CardContent>
       </Card>
 
