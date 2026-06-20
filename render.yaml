@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: finoerp
+    runtime: static
+    rootDir: app
+    buildCommand: pnpm install && pnpm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
