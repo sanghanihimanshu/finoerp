@@ -2,9 +2,11 @@ services:
   - type: web
     name: finoerp
     runtime: static
-    rootDir: app
-    buildCommand: npm install && npm run build
-    staticPublishPath: dist
+    buildCommand: cd app && npm install && npm run build
+    staticPublishPath: app/dist
+    envVars:
+      - key: NODE_VERSION
+        value: 20
     routes:
       - type: rewrite
         source: /*
