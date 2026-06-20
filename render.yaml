@@ -3,8 +3,8 @@ services:
     name: finoerp
     runtime: static
     installCommand: corepack enable && pnpm install --ignore-scripts
-    buildCommand: cd app && pnpm run build
-    staticPublishPath: app/.output/public
+    buildCommand: cd app && pnpm run build && cp -r .output/public ../dist
+    staticPublishPath: dist
     envVars:
       - key: NODE_VERSION
         value: 20
