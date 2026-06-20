@@ -4,10 +4,7 @@ import {
   useNavigate,
   useRouterState,
 } from '@tanstack/react-router'
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-import { TanStackDevtools } from '@tanstack/react-devtools'
 import PostHogProvider from '../integrations/posthog/provider'
-import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 import { AppShell } from '#/components/app-shell'
 import { TooltipProvider } from '#/components/ui/tooltip'
 import { AuthProvider, useAuth } from '#/lib/auth'
@@ -71,13 +68,6 @@ function RootComponent() {
       <PostHogProvider>
         <TooltipProvider>
           <AppContent />
-          <TanStackDevtools
-            config={{ position: 'bottom-right' }}
-            plugins={[
-              { name: 'Tanstack Router', render: <TanStackRouterDevtoolsPanel /> },
-              TanStackQueryDevtools,
-            ]}
-          />
         </TooltipProvider>
       </PostHogProvider>
     </AuthProvider>
