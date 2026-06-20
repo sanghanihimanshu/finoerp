@@ -3,6 +3,9 @@
   "buildCommand": "cd app && pnpm run build",
   "outputDirectory": "app/.output/public",
   "framework": null,
+  "env": {
+    "NITRO_PRESET": "static"
+  },
   "rewrites": [
     { "source": "/(.*)", "destination": "/" }
   ]
