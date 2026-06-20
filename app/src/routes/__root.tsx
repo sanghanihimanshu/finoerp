@@ -12,6 +12,9 @@ import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 
 import { getLocale } from '#/paraglide/runtime'
 
+import { AppShell } from '#/components/app-shell'
+import { TooltipProvider } from '#/components/ui/tooltip'
+
 import appCss from '../styles.css?url'
 
 import type { QueryClient } from '@tanstack/react-query'
@@ -60,7 +63,11 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <PostHogProvider>
-          {children}
+          <TooltipProvider>
+            <AppShell>
+              {children}
+            </AppShell>
+          </TooltipProvider>
           <TanStackDevtools
             config={{
               position: 'bottom-right',

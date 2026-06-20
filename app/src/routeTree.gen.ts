@@ -9,12 +9,60 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ProjectsRouteImport } from './routes/projects'
+import { Route as ProcurementRouteImport } from './routes/procurement'
 import { Route as McpRouteImport } from './routes/mcp'
+import { Route as MaterialsRouteImport } from './routes/materials'
+import { Route as HrRouteImport } from './routes/hr'
+import { Route as FinanceRouteImport } from './routes/finance'
+import { Route as DocumentsRouteImport } from './routes/documents'
+import { Route as ApprovalsRouteImport } from './routes/approvals'
 import { Route as IndexRouteImport } from './routes/index'
 
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsRoute = ProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProcurementRoute = ProcurementRouteImport.update({
+  id: '/procurement',
+  path: '/procurement',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const McpRoute = McpRouteImport.update({
   id: '/mcp',
   path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MaterialsRoute = MaterialsRouteImport.update({
+  id: '/materials',
+  path: '/materials',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HrRoute = HrRouteImport.update({
+  id: '/hr',
+  path: '/hr',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FinanceRoute = FinanceRouteImport.update({
+  id: '/finance',
+  path: '/finance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocumentsRoute = DocumentsRouteImport.update({
+  id: '/documents',
+  path: '/documents',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApprovalsRoute = ApprovalsRouteImport.update({
+  id: '/approvals',
+  path: '/approvals',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -25,37 +73,156 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/approvals': typeof ApprovalsRoute
+  '/documents': typeof DocumentsRoute
+  '/finance': typeof FinanceRoute
+  '/hr': typeof HrRoute
+  '/materials': typeof MaterialsRoute
   '/mcp': typeof McpRoute
+  '/procurement': typeof ProcurementRoute
+  '/projects': typeof ProjectsRoute
+  '/settings': typeof SettingsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/approvals': typeof ApprovalsRoute
+  '/documents': typeof DocumentsRoute
+  '/finance': typeof FinanceRoute
+  '/hr': typeof HrRoute
+  '/materials': typeof MaterialsRoute
   '/mcp': typeof McpRoute
+  '/procurement': typeof ProcurementRoute
+  '/projects': typeof ProjectsRoute
+  '/settings': typeof SettingsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/approvals': typeof ApprovalsRoute
+  '/documents': typeof DocumentsRoute
+  '/finance': typeof FinanceRoute
+  '/hr': typeof HrRoute
+  '/materials': typeof MaterialsRoute
   '/mcp': typeof McpRoute
+  '/procurement': typeof ProcurementRoute
+  '/projects': typeof ProjectsRoute
+  '/settings': typeof SettingsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/mcp'
+  fullPaths:
+    | '/'
+    | '/approvals'
+    | '/documents'
+    | '/finance'
+    | '/hr'
+    | '/materials'
+    | '/mcp'
+    | '/procurement'
+    | '/projects'
+    | '/settings'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/mcp'
-  id: '__root__' | '/' | '/mcp'
+  to:
+    | '/'
+    | '/approvals'
+    | '/documents'
+    | '/finance'
+    | '/hr'
+    | '/materials'
+    | '/mcp'
+    | '/procurement'
+    | '/projects'
+    | '/settings'
+  id:
+    | '__root__'
+    | '/'
+    | '/approvals'
+    | '/documents'
+    | '/finance'
+    | '/hr'
+    | '/materials'
+    | '/mcp'
+    | '/procurement'
+    | '/projects'
+    | '/settings'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApprovalsRoute: typeof ApprovalsRoute
+  DocumentsRoute: typeof DocumentsRoute
+  FinanceRoute: typeof FinanceRoute
+  HrRoute: typeof HrRoute
+  MaterialsRoute: typeof MaterialsRoute
   McpRoute: typeof McpRoute
+  ProcurementRoute: typeof ProcurementRoute
+  ProjectsRoute: typeof ProjectsRoute
+  SettingsRoute: typeof SettingsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects': {
+      id: '/projects'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof ProjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/procurement': {
+      id: '/procurement'
+      path: '/procurement'
+      fullPath: '/procurement'
+      preLoaderRoute: typeof ProcurementRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/mcp': {
       id: '/mcp'
       path: '/mcp'
       fullPath: '/mcp'
       preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/materials': {
+      id: '/materials'
+      path: '/materials'
+      fullPath: '/materials'
+      preLoaderRoute: typeof MaterialsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hr': {
+      id: '/hr'
+      path: '/hr'
+      fullPath: '/hr'
+      preLoaderRoute: typeof HrRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/finance': {
+      id: '/finance'
+      path: '/finance'
+      fullPath: '/finance'
+      preLoaderRoute: typeof FinanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/documents': {
+      id: '/documents'
+      path: '/documents'
+      fullPath: '/documents'
+      preLoaderRoute: typeof DocumentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/approvals': {
+      id: '/approvals'
+      path: '/approvals'
+      fullPath: '/approvals'
+      preLoaderRoute: typeof ApprovalsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -70,7 +237,15 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApprovalsRoute: ApprovalsRoute,
+  DocumentsRoute: DocumentsRoute,
+  FinanceRoute: FinanceRoute,
+  HrRoute: HrRoute,
+  MaterialsRoute: MaterialsRoute,
   McpRoute: McpRoute,
+  ProcurementRoute: ProcurementRoute,
+  ProjectsRoute: ProjectsRoute,
+  SettingsRoute: SettingsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
