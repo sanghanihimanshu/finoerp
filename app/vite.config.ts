@@ -1,24 +1,32 @@
 import { defineConfig } from 'vite'
-import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
+import { devtools } from '@tanstack/devtools-vite'
 import { paraglideVitePlugin } from '@inlang/paraglide-js'
+
+import { tanstackStart } from '@tanstack/react-start/plugin/vite'
+
 import viteReact from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+import { nitro } from 'nitro/vite'
 
-export default defineConfig({
+const config = defineConfig({
   resolve: { tsconfigPaths: true },
   plugins: [
+    devtools(),
     paraglideVitePlugin({
       project: './project.inlang',
       outdir: './src/paraglide',
       strategy: ['url', 'baseLocale'],
     }),
-    TanStackRouterVite({ autoCodeSplitting: true }),
+    nitro({ rollupConfig: { external: [/^@sentry\//] } }),
     tailwindcss(),
+    tanstackStart(),
     viteReact(),
   ],
   server: {
     proxy: {
-      '/api': 'http://localhost:4000',
-    },
-  },
+      '/api': 'http://localhost:4000'
+    }
+  }
 })
+
+export default config
