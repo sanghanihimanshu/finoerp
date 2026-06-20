@@ -1,11 +1,8 @@
 {
   "installCommand": "pnpm install --frozen-lockfile",
   "buildCommand": "cd app && pnpm run build",
-  "outputDirectory": "app/.output/public",
+  "outputDirectory": "app/dist",
   "framework": null,
-  "env": {
-    "NITRO_PRESET": "static"
-  },
   "rewrites": [
     { "source": "/(.*)", "destination": "/" }
   ]
