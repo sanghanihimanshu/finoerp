@@ -26,6 +26,9 @@ const config = defineConfig({
     proxy: {
       '/api': 'http://localhost:4000'
     }
+  },
+  preview: {
+    allowedHosts: ["finoerp-ednb.onrender.com"]
   }
 })
 
